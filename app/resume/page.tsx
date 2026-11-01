@@ -16,7 +16,7 @@ export default function Resume() {
       </header>
       <object
         className="resume-preview"
-        data={`${resumeUrl}#view=FitH`}
+        data={`${resumeUrl}#view=FitH&pagemode=none`}
         type="application/pdf"
         aria-label="Ruiqian Zhang resume PDF preview"
       >

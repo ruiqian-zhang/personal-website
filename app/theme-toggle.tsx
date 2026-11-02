@@ -11,6 +11,12 @@ export function ThemeToggle() {
     let saved: string | null = null;
     try { saved = localStorage.getItem("rhema-theme"); } catch { /* Use system preference if storage is unavailable. */ }
     setPreference(saved === "light" || saved === "dark" ? saved : "system");
+    const syncTheme = (event: Event) => {
+      const next = (event as CustomEvent<ThemePreference>).detail;
+      if (next === "system" || next === "light" || next === "dark") setPreference(next);
+    };
+    window.addEventListener("rhema-theme-change", syncTheme);
+    return () => window.removeEventListener("rhema-theme-change", syncTheme);
   }, []);
 
   useEffect(() => {
@@ -29,6 +35,7 @@ export function ThemeToggle() {
   function selectTheme(next: ThemePreference) {
     setPreference(next);
     try { localStorage.setItem("rhema-theme", next); } catch { /* Selection still works without storage. */ }
+    window.dispatchEvent(new CustomEvent<ThemePreference>("rhema-theme-change", { detail: next }));
   }
 
   return (

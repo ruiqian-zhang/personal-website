@@ -2,61 +2,115 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import { SocialIcon } from "./social-icon";
+import { ThemeToggle } from "./theme-toggle";
+
+const navigation = [["/", "About"], ["/resume/", "Resume"], ["/projects/", "Projects"], ["/blogs/", "Blogs"]] as const;
 
 export function SiteHeader() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const headerRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  function closeMenu() {
+    dialogRef.current?.close();
+    setMenuOpen(false);
+  }
+
+  function keepFocusInside(event: KeyboardEvent<HTMLDialogElement>) {
+    if (event.key !== "Tab") return;
+    const controls = event.currentTarget.querySelectorAll<HTMLElement>("a[href], button:not([disabled])");
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
+  }
+
+  function currentSection(href: string): "page" | "location" | undefined {
+    const currentPath = pathname.replace(/\/$/, "") || "/";
+    const targetPath = href.replace(/\/$/, "") || "/";
+    if (currentPath === targetPath) return "page";
+    if (targetPath !== "/" && currentPath.startsWith(`${targetPath}/`)) return "location";
+  }
 
   useEffect(() => { setMenuOpen(false); }, [pathname]);
 
   useEffect(() => {
     if (!menuOpen) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
     const desktop = window.matchMedia("(min-width: 601px)");
     const closeOnDesktop = () => { if (desktop.matches) setMenuOpen(false); };
-    const closeOnOutsidePress = (event: PointerEvent) => {
-      if (event.target instanceof Node && !headerRef.current?.contains(event.target)) setMenuOpen(false);
-    };
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setMenuOpen(false);
-        toggleRef.current?.focus();
-      }
-    };
+    const rootOverflow = document.documentElement.style.overflow;
+    const bodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    dialog.showModal();
+    closeRef.current?.focus({ preventScroll: true });
     desktop.addEventListener("change", closeOnDesktop);
-    document.addEventListener("pointerdown", closeOnOutsidePress);
-    document.addEventListener("keydown", closeOnEscape);
     return () => {
       desktop.removeEventListener("change", closeOnDesktop);
-      document.removeEventListener("pointerdown", closeOnOutsidePress);
-      document.removeEventListener("keydown", closeOnEscape);
+      dialog.close();
+      document.documentElement.style.overflow = rootOverflow;
+      document.body.style.overflow = bodyOverflow;
+      if (desktop.matches) {
+        document.querySelector<HTMLAnchorElement>(".site-header .wordmark")?.focus({ preventScroll: true });
+      }
     };
   }, [menuOpen]);
 
   return (
-    <header className="site-header" ref={headerRef} data-menu-open={menuOpen}>
-      <Link href="/" className="wordmark" aria-label="Ruiqian Zhang, home" onClick={() => setMenuOpen(false)}>
+    <header className="site-header">
+      <Link href="/" className="wordmark" aria-label="Ruiqian Zhang, home">
         <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/icon.svg`} width="40" height="40" alt="" aria-hidden="true" />
       </Link>
-      <button ref={toggleRef} type="button" className="menu-toggle" aria-expanded={menuOpen} aria-controls="main-navigation" aria-label={menuOpen ? "Close navigation" : "Open navigation"} onClick={() => setMenuOpen(!menuOpen)}>
-        <span>{menuOpen ? "Close" : "Menu"}</span>
+      <button ref={toggleRef} type="button" className="menu-toggle" aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-haspopup="dialog" aria-label="Open navigation" onClick={() => setMenuOpen(true)}>
+        <span>Menu</span>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
-          {menuOpen ? <path d="m6 6 12 12M6 18 18 6" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
+          <path d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
-      <div className="header-right" id="main-navigation">
+      <div className="header-right">
         <nav aria-label="Main navigation">
-          {[["/", "About"], ["/resume/", "Resume"], ["/projects/", "Projects"], ["/blogs/", "Blogs"]].map(([href, label]) => {
-            const currentPath = pathname.replace(/\/$/, "") || "/";
-            const targetPath = href.replace(/\/$/, "") || "/";
-            const exact = currentPath === targetPath;
-            const section = targetPath !== "/" && currentPath.startsWith(`${targetPath}/`);
-            return <Link key={href} href={href} aria-current={exact ? "page" : section ? "location" : undefined} onClick={() => setMenuOpen(false)}>{label}</Link>;
-          })}
+          {navigation.map(([href, label]) => <Link key={href} href={href} aria-current={currentSection(href)}>{label}</Link>)}
         </nav>
       </div>
+      <dialog ref={dialogRef} id="mobile-navigation" className="mobile-menu" aria-label="Site navigation" onKeyDown={keepFocusInside} onCancel={event => { event.preventDefault(); closeMenu(); }} onClose={event => { if (!event.currentTarget.open) setMenuOpen(false); }}>
+        <div className="mobile-menu-inner">
+          <div className="mobile-menu-header">
+            <Link href="/" className="wordmark" aria-label="Ruiqian Zhang, home" onClick={closeMenu}>
+              <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/icon.svg`} width="40" height="40" alt="" aria-hidden="true" />
+            </Link>
+            <button ref={closeRef} type="button" className="menu-toggle" aria-label="Close navigation" onClick={closeMenu}>
+              <span>Close</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" /></svg>
+            </button>
+          </div>
+          <nav className="mobile-menu-nav" aria-label="Main navigation">
+            {navigation.map(([href, label]) => <Link key={href} href={href} aria-current={currentSection(href)} onClick={closeMenu}>
+              <span>{label}</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+            </Link>)}
+          </nav>
+          <div className="mobile-menu-footer">
+            <div className="mobile-menu-preferences"><span>Appearance</span><ThemeToggle /></div>
+            <nav className="social-links" aria-label="Social links">
+              <a href="mailto:rhema@vt.edu" aria-label="Email rhema@vt.edu" title="Email"><SocialIcon name="email" /></a>
+              <a href="https://x.com/rhemazhang" target="_blank" rel="noopener noreferrer" aria-label="Rhema Zhang on X" title="X"><SocialIcon name="x" /></a>
+              <a href="https://github.com/ruiqian-zhang" target="_blank" rel="noopener noreferrer" aria-label="Ruiqian Zhang on GitHub" title="GitHub"><SocialIcon name="github" /></a>
+              <a href="https://www.linkedin.com/in/ruiqianzhang/" target="_blank" rel="noopener noreferrer" aria-label="Ruiqian Zhang on LinkedIn" title="LinkedIn"><SocialIcon name="linkedin" /></a>
+            </nav>
+          </div>
+        </div>
+      </dialog>
     </header>
   );
 }

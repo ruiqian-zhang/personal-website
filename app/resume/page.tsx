@@ -9,6 +9,11 @@ export default function Resume() {
     <article className="resume-page">
       <header className="resume-header">
         <h1>Resume</h1>
+        <div className="resume-mobile-document">
+          <span className="resume-document-type">PDF document</span>
+          <h2>Ruiqian Zhang</h2>
+          <p>Electrical Engineering · Virginia Tech</p>
+        </div>
         <div className="resume-actions">
           <a href={resumeUrl} target="_blank" rel="noopener noreferrer">Open PDF<span className="sr-only"> in a new tab</span></a>
           <a href={resumeUrl} download="Ruiqian_Zhang_Resume.pdf">Download</a>

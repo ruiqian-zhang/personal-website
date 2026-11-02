@@ -8,7 +8,9 @@ export function SiteHeader() {
 
   return (
     <header className="site-header">
-      <Link href="/" className="wordmark" aria-label="Ruiqian Zhang, home">Ruiqian Zhang</Link>
+      <Link href="/" className="wordmark" aria-label="Ruiqian Zhang, home">
+        <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/icon.svg`} width="40" height="40" alt="" aria-hidden="true" />
+      </Link>
       <div className="header-right">
         <nav aria-label="Main navigation">
           {[["/", "About"], ["/resume/", "Resume"], ["/projects/", "Projects"], ["/blogs/", "Blogs"]].map(([href, label]) => {

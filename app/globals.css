@@ -176,6 +176,9 @@ article { max-width: 660px; }
   .about-intro h1 { font-size: clamp(30px, 6vw, 40px); letter-spacing: -1px; }
   .about-subtitle { font-size: 16px; }
   .site-footer { margin-top: var(--space-3); }
+  .theme-selector button { width: 44px; height: 44px; }
+  .social-links { gap: var(--space-1); }
+  .social-links a { width: 44px; min-width: 44px; justify-content: center; }
 }
 
 @media (max-width: 480px) {

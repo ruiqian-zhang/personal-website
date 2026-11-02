@@ -15,6 +15,7 @@ async page => {
     check(await toggle().isVisible(), `No menu button at ${width}px`);
     check(!await dialog().isVisible(), `Closed navigation is exposed at ${width}px`);
     const before = await page.locator('main').boundingBox();
+    const stampBefore = await page.locator('.site-header > .wordmark').boundingBox();
     const scrollBefore = await page.evaluate(() => scrollY);
     await toggle().click();
     await dialog().waitFor({ state: 'visible' });
@@ -22,6 +23,11 @@ async page => {
     const after = await page.locator('main').boundingBox();
     check(Math.abs(after.y - before.y) < 1, 'Opening the menu moved the page');
     check(await navigation().isVisible(), 'Open menu is hidden');
+    const stampAfter = await dialog().getByRole('link', { name: 'Ruiqian Zhang, home' }).boundingBox();
+    check(['x', 'y', 'width', 'height'].every(key => Math.abs(stampBefore[key] - stampAfter[key]) < 1), 'Stamp moved when opening menu');
+    check(await dialog().evaluate(element => getComputedStyle(element).animationName) === 'none', 'Menu panel still animates');
+    check(await dialog().getByRole('button', { name: 'Close navigation' }).innerText() === '', 'Close button has visible text');
+    check(await dialog().locator('.menu-icon-line').count() === 2, 'Menu icon does not have two strokes');
     const targets = await navigation().getByRole('link').evaluateAll(links => links.map(link => {
       const rect = link.getBoundingClientRect();
       return { width: rect.width, height: rect.height };
@@ -31,12 +37,18 @@ async page => {
     check(await page.evaluate(() => scrollY) === scrollBefore, 'Background scrolled behind menu');
     await dialog().getByRole('link', { name: 'Ruiqian Zhang, home' }).focus();
     await page.keyboard.press('Shift+Tab');
-    check(await dialog().getByRole('link', { name: 'Ruiqian Zhang on LinkedIn' }).evaluate(link => link === document.activeElement), 'Focus escaped the menu backwards');
+    check(await dialog().getByRole('button', { name: 'Use dark theme' }).evaluate(button => button === document.activeElement), 'Focus escaped the menu backwards');
     await page.keyboard.press('Tab');
     check(await dialog().getByRole('link', { name: 'Ruiqian Zhang, home' }).evaluate(link => link === document.activeElement), 'Focus escaped the menu forwards');
     await page.keyboard.press('Escape');
     check(await toggle().getAttribute('aria-expanded') === 'false', 'Escape did not close menu');
     check(await toggle().evaluate(button => button === document.activeElement), 'Escape lost keyboard focus');
+    const closedTransform = await toggle().locator('.menu-icon-top').evaluate(async element => {
+      await Promise.all(element.getAnimations().map(animation => animation.finished));
+      return getComputedStyle(element).transform;
+    });
+    check(closedTransform === 'none', 'Menu icon did not return to horizontal lines');
+    check(await toggle().innerText() === '', 'Menu button has visible text');
     await page.keyboard.press('Enter');
     check(await navigation().isVisible(), 'Keyboard did not open menu');
     await page.keyboard.press('Tab');
@@ -63,6 +75,7 @@ async page => {
   await page.setViewportSize({ width: 601, height: 812 });
   check(!await toggle().isVisible(), 'Mobile button visible on desktop');
   check(await page.locator('.header-right nav').isVisible(), 'Desktop navigation hidden');
+  await page.waitForFunction(() => !document.querySelector('#mobile-navigation')?.open);
   check(!await page.locator('#mobile-navigation').evaluate(element => element.open), 'Modal remained open on desktop');
   await page.setViewportSize({ width: 375, height: 812 });
   await page.waitForFunction(() => document.querySelector('.menu-toggle')?.getAttribute('aria-expanded') === 'false');
@@ -80,5 +93,24 @@ async page => {
   check(await dialog().evaluate(element => getComputedStyle(element).animationDuration) === '0s', 'Menu ignored reduced motion');
   await page.keyboard.press('Escape');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
-  return { result: 'passed', phoneWidths: [320, 375, 600], shortScreen: '320x360', desktopBreakpoint: 601, checks: ['modal isolation', 'no page movement', 'scroll lock', 'focus trap', 'keyboard', 'Escape focus', 'close button', 'navigation close', 'nested section', 'theme synchronization', 'resize', 'reduced motion', 'overflow'] };
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto(`${origin}/resume/`, { waitUntil: 'domcontentloaded' });
+  const preview = page.locator('.resume-mobile-preview img');
+  await preview.waitFor({ state: 'visible' });
+  await page.waitForFunction(() => { const image = document.querySelector('.resume-mobile-preview img'); return image?.complete && image.naturalWidth > 0; });
+  check(await page.locator('.resume-mobile-preview').getAttribute('href') === `${new URL(origin).pathname.replace(/\/$/, '')}/Ruiqian_Zhang_Resume.pdf`, 'Mobile preview does not open the PDF');
+  check(!await page.locator('.site-footer .theme-selector').isVisible(), 'Theme controls remain in mobile footer');
+  const centeredFooter = await page.locator('.site-footer').evaluate(footer => {
+    const links = [...footer.querySelectorAll('.social-links a')].map(link => link.getBoundingClientRect());
+    const social = footer.querySelector('.social-links').getBoundingClientRect();
+    const location = footer.querySelector('.footer-location').getBoundingClientRect();
+    const copyright = footer.querySelector('.footer-copyright').getBoundingClientRect();
+    return links.length === 4 && links.every(rect => Math.abs(rect.y - links[0].y) < 1) && Math.abs(social.x + social.width / 2 - innerWidth / 2) < 1 && Math.abs(location.x + location.width / 2 - innerWidth / 2) < 1 && copyright.y > location.y && getComputedStyle(footer.querySelector('.footer-copyright')).textAlign === 'center';
+  });
+  check(centeredFooter, 'Mobile footer is not centered in the requested order');
+  await page.setViewportSize({ width: 768, height: 900 });
+  check(await page.locator('.resume-preview').isVisible(), 'Desktop PDF preview missing');
+  check(!await page.locator('.resume-mobile-preview').isVisible(), 'Mobile preview is visible on desktop');
+  check(await page.locator('.site-footer .theme-selector').isVisible(), 'Desktop theme controls missing');
+  return { result: 'passed', phoneWidths: [320, 375, 600], shortScreen: '320x360', desktopBreakpoint: 601, checks: ['static stamp', 'two-stroke icon', 'no visible menu labels', 'no panel animation', 'mobile PDF preview', 'centered mobile footer', 'modal isolation', 'no page movement', 'scroll lock', 'focus trap', 'keyboard', 'Escape focus', 'close button', 'navigation close', 'nested section', 'theme synchronization', 'resize', 'reduced motion', 'overflow'] };
 }

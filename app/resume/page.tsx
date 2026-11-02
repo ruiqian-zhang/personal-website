@@ -9,16 +9,14 @@ export default function Resume() {
     <article className="resume-page">
       <header className="resume-header">
         <h1>Resume</h1>
-        <div className="resume-mobile-document">
-          <span className="resume-document-type">PDF document</span>
-          <h2>Ruiqian Zhang</h2>
-          <p>Electrical Engineering · Virginia Tech</p>
-        </div>
         <div className="resume-actions">
           <a href={resumeUrl} target="_blank" rel="noopener noreferrer">Open PDF<span className="sr-only"> in a new tab</span></a>
           <a href={resumeUrl} download="Ruiqian_Zhang_Resume.pdf">Download</a>
         </div>
       </header>
+      <a className="resume-mobile-preview" href={resumeUrl} target="_blank" rel="noopener noreferrer" aria-label="Open full resume PDF in a new tab">
+        <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/resume-preview.webp`} width="1391" height="1800" alt="Full-page preview of Ruiqian Zhang’s resume" />
+      </a>
       <object
         className="resume-preview"
         data={`${resumeUrl}#view=FitH&pagemode=none`}

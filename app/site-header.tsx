@@ -8,6 +8,13 @@ import { ThemeToggle } from "./theme-toggle";
 
 const navigation = [["/", "About"], ["/resume/", "Resume"], ["/projects/", "Projects"], ["/blogs/", "Blogs"]] as const;
 
+function MenuIcon() {
+  return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+    <path className="menu-icon-line menu-icon-top" d="M4 8h16" />
+    <path className="menu-icon-line menu-icon-bottom" d="M4 16h16" />
+  </svg>;
+}
+
 export function SiteHeader() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -72,11 +79,8 @@ export function SiteHeader() {
       <Link href="/" className="wordmark" aria-label="Ruiqian Zhang, home">
         <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/icon.svg`} width="40" height="40" alt="" aria-hidden="true" />
       </Link>
-      <button ref={toggleRef} type="button" className="menu-toggle" aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-haspopup="dialog" aria-label="Open navigation" onClick={() => setMenuOpen(true)}>
-        <span>Menu</span>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
-          <path d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
+      <button ref={toggleRef} type="button" className="menu-toggle" data-open={menuOpen} aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-haspopup="dialog" aria-label="Open navigation" onClick={() => setMenuOpen(true)}>
+        <MenuIcon />
       </button>
       <div className="header-right">
         <nav aria-label="Main navigation">
@@ -89,9 +93,8 @@ export function SiteHeader() {
             <Link href="/" className="wordmark" aria-label="Ruiqian Zhang, home" onClick={closeMenu}>
               <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/icon.svg`} width="40" height="40" alt="" aria-hidden="true" />
             </Link>
-            <button ref={closeRef} type="button" className="menu-toggle" aria-label="Close navigation" onClick={closeMenu}>
-              <span>Close</span>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" /></svg>
+            <button ref={closeRef} type="button" className="menu-toggle" data-open={menuOpen} aria-label="Close navigation" onClick={closeMenu}>
+              <MenuIcon />
             </button>
           </div>
           <nav className="mobile-menu-nav" aria-label="Main navigation">
@@ -101,13 +104,13 @@ export function SiteHeader() {
             </Link>)}
           </nav>
           <div className="mobile-menu-footer">
-            <div className="mobile-menu-preferences"><span>Appearance</span><ThemeToggle /></div>
             <nav className="social-links" aria-label="Social links">
               <a href="mailto:rhema@vt.edu" aria-label="Email rhema@vt.edu" title="Email"><SocialIcon name="email" /></a>
               <a href="https://x.com/rhemazhang" target="_blank" rel="noopener noreferrer" aria-label="Rhema Zhang on X" title="X"><SocialIcon name="x" /></a>
               <a href="https://github.com/ruiqian-zhang" target="_blank" rel="noopener noreferrer" aria-label="Ruiqian Zhang on GitHub" title="GitHub"><SocialIcon name="github" /></a>
               <a href="https://www.linkedin.com/in/ruiqianzhang/" target="_blank" rel="noopener noreferrer" aria-label="Ruiqian Zhang on LinkedIn" title="LinkedIn"><SocialIcon name="linkedin" /></a>
             </nav>
+            <div className="mobile-menu-preferences"><ThemeToggle /></div>
           </div>
         </div>
       </dialog>

@@ -1,12 +1,16 @@
-import layout from "./project-assets/MePad_Layout.jpg";
-import matrix from "./project-assets/MePad_Matrix.jpg";
-import schematic from "./project-assets/MePad_Schematic.png";
-import placement from "./project-assets/MePad_PCB_Day2.png";
-import routing from "./project-assets/MePad_PCB_Day3.png";
-import revisedRouting from "./project-assets/MePad_PCB_Day4.png";
-import website from "./project-assets/Website_Main.png";
-import janeWong from "./project-assets/Website_Wongmjane.png";
-import apple from "./project-assets/Website_Apple.png";
+import layout from "./generated-images/MePad_Layout.webp";
+import matrix from "./generated-images/MePad_Matrix.webp";
+import schematic from "./generated-images/MePad_Schematic.webp";
+import placement from "./generated-images/MePad_PCB_Day2.webp";
+import routing from "./generated-images/MePad_PCB_Day3.webp";
+import revisedRouting from "./generated-images/MePad_PCB_Day4.webp";
+import website from "./generated-images/Website_Main.webp";
+import janeWong from "./generated-images/Website_Wongmjane.webp";
+import apple from "./generated-images/Website_Apple.webp";
+import routingSmall from "./generated-images/MePad_PCB_Day3-420.webp";
+import routingLarge from "./generated-images/MePad_PCB_Day3-840.webp";
+import websiteSmall from "./generated-images/Website_Main-420.webp";
+import websiteLarge from "./generated-images/Website_Main-840.webp";
 
 export const projectImages = { layout, matrix, schematic, placement, routing, revisedRouting, website, janeWong, apple };
 
@@ -19,7 +23,8 @@ export const projects = [
     date: "2026-01-03",
     dateLabel: "Jan 3, 2026",
     status: "In progress",
-    image: routing,
+    image: routingSmall,
+    image2x: routingLarge,
     imageAlt: "MePad PCB layout and routing",
   },
   {
@@ -30,7 +35,8 @@ export const projects = [
     date: "2025-09-20",
     dateLabel: "Sep 20, 2025",
     status: "In progress",
-    image: website,
+    image: websiteSmall,
+    image2x: websiteLarge,
     imageAlt: "Screenshot of the original personal website",
   },
 ];

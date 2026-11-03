@@ -21,6 +21,8 @@ npm run dev
 
 Run `npm run build` to generate the static site in `out/`.
 
+Image variants are generated automatically before development and production builds. Keep original portraits in `app/image-sources/` and project images in `app/project-assets/`; `npm run images` regenerates AVIF and WebP files in the ignored `app/generated-images/` and `public/generated-images/` directories. Responsive image variants use content-hashed filenames for static hosting, without an image server.
+
 ## Credits
 
 - Typography: [PP Kyoto by Pangram Pangram](https://pangrampangram.com/products/kyoto).

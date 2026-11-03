@@ -13,6 +13,7 @@ const kyoto = localFont({
   ],
   variable: "--font-kyoto",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {

@@ -1,8 +1,15 @@
-import Image from "next/image";
+import portraitSmall from "./generated-images/rhema-480.webp";
+import portraitMedium from "./generated-images/rhema-960.webp";
+import portraitLarge from "./generated-images/rhema-1440.webp";
+import portraitAvif from "./generated-images/portrait-avif.json";
 import { ProjectList } from "./project-list";
 import { TypewriterGreeting } from "./typewriter-greeting";
+import { AboutStickers } from "./about-stickers";
+
+const stickersEnabled = false;
 
 export default function About() {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
   return (
     <article className="about-page">
       <header className="about-intro">
@@ -11,14 +18,21 @@ export default function About() {
           <p className="about-subtitle">Electrical Engineering, Class of 2028</p>
         </div>
         <div className="about-photo-frame">
-          <Image
+          <picture>
+            <source type="image/avif" srcSet={`${basePath}${portraitAvif.small.src} ${portraitAvif.small.width}w, ${basePath}${portraitAvif.medium.src} ${portraitAvif.medium.width}w, ${basePath}${portraitAvif.large.src} ${portraitAvif.large.width}w`} sizes="(max-width: 480px) 435px, (max-width: 666px) 320px, (max-width: 960px) 48vw, 461px" />
+          <img
             className="about-photo"
-            src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/rhema.jpg`}
+            src={portraitMedium.src}
+            srcSet={`${portraitSmall.src} ${portraitSmall.width}w, ${portraitMedium.src} ${portraitMedium.width}w, ${portraitLarge.src} ${portraitLarge.width}w`}
+            sizes="(max-width: 480px) 435px, (max-width: 666px) 320px, (max-width: 960px) 48vw, 461px"
             alt="Rhema Zhang Portrait"
             width={288}
             height={288}
-            preload
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
+          </picture>
         </div>
       </header>
       <section className="prose" aria-labelledby="about-heading">
@@ -31,6 +45,7 @@ export default function About() {
         <h2 id="projects-heading">Projects</h2>
         <ProjectList headingLevel={3} />
       </section>
+      {stickersEnabled && <AboutStickers />}
     </article>
   );
 }

@@ -1,3 +1,7 @@
+## Repository preference
+
+Make website changes in `C:\Users\mckra\GitHub\personal-website` by default. This is the primary website repository. `C:\Users\mckra\GitHub\website2.0` is for prototypes; use it only when the user explicitly requests prototype work.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know

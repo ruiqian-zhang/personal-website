@@ -5,6 +5,7 @@ import portraitAvif from "./generated-images/portrait-avif.json";
 import { ProjectList } from "./project-list";
 import { TypewriterGreeting } from "./typewriter-greeting";
 import { AboutStickers } from "./about-stickers";
+import { ProfilePhotoFrame } from "./profile-photo-frame";
 
 const stickersEnabled = false;
 
@@ -17,11 +18,12 @@ export default function About() {
           <TypewriterGreeting />
           <p className="about-subtitle">Electrical Engineering, Class of 2028</p>
         </div>
-        <div className="about-photo-frame">
+        <ProfilePhotoFrame>
           <picture>
             <source type="image/avif" srcSet={`${basePath}${portraitAvif.small.src} ${portraitAvif.small.width}w, ${basePath}${portraitAvif.medium.src} ${portraitAvif.medium.width}w, ${basePath}${portraitAvif.large.src} ${portraitAvif.large.width}w`} sizes="(max-width: 480px) 435px, (max-width: 666px) 320px, (max-width: 960px) 48vw, 461px" />
           <img
             className="about-photo"
+            draggable={false}
             src={portraitMedium.src}
             srcSet={`${portraitSmall.src} ${portraitSmall.width}w, ${portraitMedium.src} ${portraitMedium.width}w, ${portraitLarge.src} ${portraitLarge.width}w`}
             sizes="(max-width: 480px) 435px, (max-width: 666px) 320px, (max-width: 960px) 48vw, 461px"
@@ -33,7 +35,7 @@ export default function About() {
             decoding="async"
           />
           </picture>
-        </div>
+        </ProfilePhotoFrame>
       </header>
       <section className="prose" aria-labelledby="about-heading">
         <h2 id="about-heading">About Me</h2>

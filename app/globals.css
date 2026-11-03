@@ -68,8 +68,9 @@ h3 { font-size: 17px; font-weight: 500; margin-bottom: var(--space-1); }
 .wordmark:visited { color: var(--link); }
 .header-right, nav { display: flex; align-items: center; }
 .header-right { gap: var(--space-2); }
-.menu-toggle { display: none; -webkit-tap-highlight-color: transparent; }
-.menu-toggle:focus:not(:focus-visible) { outline: none; }
+.menu-toggle { display: none; appearance: none; -webkit-tap-highlight-color: transparent; }
+.menu-toggle:hover, .menu-toggle:active { background: transparent; color: var(--link); opacity: 1; box-shadow: none; }
+.menu-toggle:focus { outline: none; }
 .mobile-menu { display: none; }
 nav { gap: var(--space-2); }
 nav a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; font-size: 14px; color: var(--link); }
@@ -86,7 +87,7 @@ article { max-width: 660px; }
 .about-page { max-width: none; }
 .about-page .prose { max-width: none; }
 .about-intro { display: grid; grid-template-columns: minmax(0, 1fr) clamp(200px, 30vw, 288px); align-items: center; gap: clamp(var(--space-3), 4vw, var(--space-6)); margin-bottom: clamp(var(--space-4), 5vw, var(--space-6)); }
-.about-photo-frame { width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: 12px; clip-path: inset(0 round 12px); isolation: isolate; }
+.about-photo-frame { width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: 12px; clip-path: inset(0 round 12px); isolation: isolate; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .about-photo-frame picture { display: contents; }
 .about-photo { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 66% 70%; transform: scale(1.6); transform-origin: 95% 35%; }
 .about-intro h1 { font-size: clamp(40px, 5.4vw, 60px); margin-bottom: var(--space-2); }

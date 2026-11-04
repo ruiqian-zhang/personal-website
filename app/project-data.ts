@@ -1,3 +1,7 @@
+import tobyCad from "./generated-images/Toby_CAD.webp";
+import tobyPrototype from "./generated-images/Toby_Prototype.webp";
+import tobySmall from "./generated-images/Toby_CAD-420.webp";
+import tobyLarge from "./generated-images/Toby_CAD-840.webp";
 import layout from "./generated-images/MePad_Layout.webp";
 import matrix from "./generated-images/MePad_Matrix.webp";
 import schematic from "./generated-images/MePad_Schematic.webp";
@@ -12,9 +16,21 @@ import routingLarge from "./generated-images/MePad_PCB_Day3-840.webp";
 import websiteSmall from "./generated-images/Website_Main-420.webp";
 import websiteLarge from "./generated-images/Website_Main-840.webp";
 
-export const projectImages = { layout, matrix, schematic, placement, routing, revisedRouting, website, janeWong, apple };
+export const projectImages = { tobyCad, tobyPrototype, layout, matrix, schematic, placement, routing, revisedRouting, website, janeWong, apple };
 
 export const projects = [
+  {
+    slug: "toby",
+    title: "TOBY: Self-Balancing Rover",
+    description: "Electronics for a wheeled-legged robot prototype built at Cal Hacks 13.0.",
+    caption: "A wheeled-legged robot prototype built at Cal Hacks.",
+    date: "2026-10-25",
+    dateLabel: "Oct 25, 2026",
+    status: "Prototype",
+    image: tobySmall,
+    image2x: tobyLarge,
+    imageAlt: "TOBY wheeled-legged robot CAD rendering",
+  },
   {
     slug: "mepad",
     title: "MePad V1",

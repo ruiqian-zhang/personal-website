@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import { type KeyboardEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { SocialIcon } from "./social-icon";
-import { ThemeToggle } from "./theme-toggle";
+import { MenuLettering } from "./menu-lettering";
+import { SearchButton } from "./site-search";
 
 const navigation = [["/", "About"], ["/resume/", "Resume"], ["/projects/", "Projects"], ["/blogs/", "Blogs"]] as const;
 
@@ -48,7 +49,17 @@ export function SiteHeader() {
     if (targetPath !== "/" && currentPath.startsWith(`${targetPath}/`)) return "location";
   }
 
-  useEffect(() => { setMenuOpen(false); }, [pathname]);
+  useEffect(() => {
+    window.addEventListener("site-search-navigate", closeMenu);
+    return () => window.removeEventListener("site-search-navigate", closeMenu);
+  }, []);
+
+  // Keep the current page covered until the destination has committed.
+  useLayoutEffect(() => { closeMenu(); }, [pathname]);
+
+  function navigateFromMenu(href: string) {
+    if ((pathname.replace(/\/$/, "") || "/") === (href.replace(/\/$/, "") || "/")) closeMenu();
+  }
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -79,6 +90,7 @@ export function SiteHeader() {
       <Link href="/" className="wordmark" aria-label="Ruiqian Zhang, home">
         <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/icon.svg`} width="40" height="40" alt="" aria-hidden="true" />
       </Link>
+      <SearchButton className="mobile-search-trigger" />
       <button ref={toggleRef} type="button" className="menu-toggle" data-open={menuOpen} aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-haspopup="dialog" aria-label="Open navigation" onClick={() => setMenuOpen(true)}>
         <MenuIcon />
       </button>
@@ -90,7 +102,7 @@ export function SiteHeader() {
       <dialog ref={dialogRef} id="mobile-navigation" className="mobile-menu" aria-label="Site navigation" onKeyDown={keepFocusInside} onCancel={event => { event.preventDefault(); closeMenu(); }} onClose={event => { if (!event.currentTarget.open) setMenuOpen(false); }}>
         <div className="mobile-menu-inner">
           <div className="mobile-menu-header">
-            <Link href="/" className="wordmark" aria-label="Ruiqian Zhang, home" onClick={closeMenu}>
+            <Link href="/" className="wordmark" aria-label="Ruiqian Zhang, home" onNavigate={() => navigateFromMenu("/")}>
               <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/icon.svg`} width="40" height="40" alt="" aria-hidden="true" />
             </Link>
             <button ref={closeRef} type="button" className="menu-toggle" data-open={menuOpen} aria-label="Close navigation" onClick={closeMenu}>
@@ -98,9 +110,8 @@ export function SiteHeader() {
             </button>
           </div>
           <nav className="mobile-menu-nav" aria-label="Main navigation">
-            {navigation.map(([href, label]) => <Link key={href} href={href} aria-current={currentSection(href)} onClick={closeMenu}>
-              <span>{label}</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+            {navigation.map(([href, label]) => <Link key={href} href={href} aria-label={label} aria-current={currentSection(href)} onNavigate={() => navigateFromMenu(href)}>
+              <MenuLettering label={label} corner={href === "/" ? "start" : href === "/blogs/" ? "end" : undefined} />
             </Link>)}
           </nav>
           <div className="mobile-menu-footer">
@@ -110,7 +121,6 @@ export function SiteHeader() {
               <a href="https://github.com/ruiqian-zhang" target="_blank" rel="noopener noreferrer" aria-label="Ruiqian Zhang on GitHub" title="GitHub"><SocialIcon name="github" /></a>
               <a href="https://www.linkedin.com/in/ruiqianzhang/" target="_blank" rel="noopener noreferrer" aria-label="Ruiqian Zhang on LinkedIn" title="LinkedIn"><SocialIcon name="linkedin" /></a>
             </nav>
-            <div className="mobile-menu-preferences"><ThemeToggle /></div>
           </div>
         </div>
       </dialog>

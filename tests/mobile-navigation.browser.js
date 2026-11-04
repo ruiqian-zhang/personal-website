@@ -37,7 +37,7 @@ async page => {
     check(await page.evaluate(() => scrollY) === scrollBefore, 'Background scrolled behind menu');
     await dialog().getByRole('link', { name: 'Ruiqian Zhang, home' }).focus();
     await page.keyboard.press('Shift+Tab');
-    check(await dialog().getByRole('button', { name: 'Use dark theme' }).evaluate(button => button === document.activeElement), 'Focus escaped the menu backwards');
+    check(await dialog().getByRole('link', { name: 'Ruiqian Zhang on LinkedIn' }).evaluate(link => link === document.activeElement), 'Focus escaped the menu backwards');
     await page.keyboard.press('Tab');
     check(await dialog().getByRole('link', { name: 'Ruiqian Zhang, home' }).evaluate(link => link === document.activeElement), 'Focus escaped the menu forwards');
     await page.keyboard.press('Escape');
@@ -69,7 +69,10 @@ async page => {
   await page.locator('.site-footer button[aria-pressed="true"]').waitFor({ state: 'attached' });
   await toggle().click();
   check(await navigation().getByRole('link', { name: 'Projects', exact: true }).getAttribute('aria-current') === 'location', 'Nested project lost its current section');
-  await dialog().getByRole('button', { name: 'Use dark theme' }).click();
+  check(await dialog().getByRole('group', { name: 'Color theme' }).count() === 0, 'Theme controls remain in menu');
+  await page.keyboard.press('Escape');
+  await page.locator('.site-footer').getByRole('button', { name: 'Use dark theme' }).click();
+  await toggle().click();
   await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
   check(await page.locator('.site-footer button[aria-label="Use dark theme"]').getAttribute('aria-pressed') === 'true', 'Footer theme did not synchronize');
   await page.setViewportSize({ width: 601, height: 812 });
@@ -82,9 +85,7 @@ async page => {
   check(!await dialog().isVisible(), 'Menu reopened after resizing to mobile');
   await page.setViewportSize({ width: 320, height: 360 });
   await toggle().click();
-  await dialog().getByRole('button', { name: 'Use light theme' }).scrollIntoViewIfNeeded();
-  await dialog().getByRole('button', { name: 'Use light theme' }).click();
-  await page.waitForFunction(() => document.documentElement.dataset.theme === 'light');
+  await dialog().getByRole('link', { name: 'Ruiqian Zhang on LinkedIn' }).scrollIntoViewIfNeeded();
   const closeBox = await dialog().getByRole('button', { name: 'Close navigation' }).boundingBox();
   check(closeBox.y >= 0 && closeBox.y + closeBox.height <= 360, 'Close button escaped short-screen viewport');
   await page.keyboard.press('Escape');
@@ -99,18 +100,19 @@ async page => {
   await preview.waitFor({ state: 'visible' });
   await page.waitForFunction(() => { const image = document.querySelector('.resume-mobile-preview img'); return image?.complete && image.naturalWidth > 0; });
   check(await page.locator('.resume-mobile-preview').getAttribute('href') === `${new URL(origin).pathname.replace(/\/$/, '')}/Ruiqian_Zhang_Resume.pdf`, 'Mobile preview does not open the PDF');
-  check(!await page.locator('.site-footer .theme-selector').isVisible(), 'Theme controls remain in mobile footer');
-  const centeredFooter = await page.locator('.site-footer').evaluate(footer => {
+  check(await page.locator('.site-footer .theme-selector').isVisible(), 'Mobile footer theme controls missing');
+  check(await page.locator('.footer-location').count() === 0, 'Footer location remains');
+  const stackedFooter = await page.locator('.site-footer').evaluate(footer => {
     const links = [...footer.querySelectorAll('.social-links a')].map(link => link.getBoundingClientRect());
     const social = footer.querySelector('.social-links').getBoundingClientRect();
-    const location = footer.querySelector('.footer-location').getBoundingClientRect();
+    const theme = footer.querySelector('.theme-selector').getBoundingClientRect();
     const copyright = footer.querySelector('.footer-copyright').getBoundingClientRect();
-    return links.length === 4 && links.every(rect => Math.abs(rect.y - links[0].y) < 1) && Math.abs(social.x + social.width / 2 - innerWidth / 2) < 1 && Math.abs(location.x + location.width / 2 - innerWidth / 2) < 1 && copyright.y > location.y && getComputedStyle(footer.querySelector('.footer-copyright')).textAlign === 'center';
+    return links.length === 4 && links.every(rect => Math.abs(rect.y - links[0].y) < 1) && theme.y >= social.bottom && Math.abs(social.x + social.width / 2 - theme.x - theme.width / 2) < 1 && copyright.y > theme.y && getComputedStyle(footer.querySelector('.footer-copyright')).textAlign === 'center';
   });
-  check(centeredFooter, 'Mobile footer is not centered in the requested order');
+  check(stackedFooter, 'Mobile footer controls are not centered and stacked');
   await page.setViewportSize({ width: 768, height: 900 });
   check(await page.locator('.resume-preview').isVisible(), 'Desktop PDF preview missing');
   check(!await page.locator('.resume-mobile-preview').isVisible(), 'Mobile preview is visible on desktop');
   check(await page.locator('.site-footer .theme-selector').isVisible(), 'Desktop theme controls missing');
-  return { result: 'passed', phoneWidths: [320, 375, 600], shortScreen: '320x360', desktopBreakpoint: 601, checks: ['static stamp', 'two-stroke icon', 'no visible menu labels', 'no panel animation', 'mobile PDF preview', 'centered mobile footer', 'modal isolation', 'no page movement', 'scroll lock', 'focus trap', 'keyboard', 'Escape focus', 'close button', 'navigation close', 'nested section', 'theme synchronization', 'resize', 'reduced motion', 'overflow'] };
+  return { result: 'passed', phoneWidths: [320, 375, 600], shortScreen: '320x360', desktopBreakpoint: 601, checks: ['static stamp', 'two-stroke icon', 'no visible menu labels', 'no panel animation', 'mobile PDF preview', 'stacked mobile footer controls', 'modal isolation', 'no page movement', 'scroll lock', 'focus trap', 'keyboard', 'Escape focus', 'close button', 'navigation close', 'nested section', 'theme synchronization', 'resize', 'reduced motion', 'overflow'] };
 }

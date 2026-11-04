@@ -5,3 +5,5 @@ out/
 .env*.local
 app/generated-images/
 public/generated-images/
+
+public/search-index.json

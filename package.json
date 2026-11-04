@@ -5,10 +5,12 @@
   "scripts": {
     "images": "node scripts/optimize-images.mjs",
     "predev": "npm run images",
-    "dev": "next dev --hostname 127.0.0.1",
+    "dev": "node scripts/dev.mjs",
     "prebuild": "npm run images",
     "build": "next build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postbuild": "node scripts/search-index.mjs",
+    "search:index": "node scripts/search-index.mjs"
   },
   "dependencies": {
     "next": "^16.0.0",
@@ -19,6 +21,8 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "cheerio": "^1.2.0",
+    "pdfjs-dist": "^6.5.438",
     "sharp": "^0.35.5",
     "typescript": "^5.9.0"
   }

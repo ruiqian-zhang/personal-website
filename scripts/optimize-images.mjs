@@ -15,7 +15,7 @@ async function generate(source, filename, options) {
   const existing = await fs.stat(destination).catch(() => null);
   if (existing && existing.mtimeMs >= Math.max(sourceTime, scriptTime)) return;
   let image = sharp(source).rotate();
-  if (options.width) image = image.resize({ width: options.width, withoutEnlargement: true });
+  if (options.width) image = image.resize({ width: options.width, height: options.height, fit: options.height ? "contain" : "cover", background: "#b0b0b0", withoutEnlargement: true });
   if (options.format === "avif") {
     await image.avif({ quality: options.quality ?? 52, effort: 4 }).toFile(destination);
   } else {
@@ -60,12 +60,13 @@ for (const filename of [
   "MePad_Layout.jpg", "MePad_Matrix.jpg", "MePad_Schematic.png",
   "MePad_PCB_Day2.png", "MePad_PCB_Day3.png", "MePad_PCB_Day4.png",
   "Website_Main.png", "Website_Wongmjane.png", "Website_Apple.png",
+  "Toby_CAD.jpg", "Toby_Prototype.jpg",
 ]) {
   const name = path.parse(filename).name;
   await generate(path.join(assets, filename), `${name}.webp`, { lossless: filename.endsWith(".png") });
-  if (filename === "MePad_PCB_Day3.png" || filename === "Website_Main.png") {
+  if (filename === "MePad_PCB_Day3.png" || filename === "Website_Main.png" || filename === "Toby_CAD.jpg") {
     for (const width of [420, 840]) {
-      await generate(path.join(assets, filename), `${name}-${width}.webp`, { width });
+      await generate(path.join(assets, filename), `${name}-${width}.webp`, { width, ...(filename === "Toby_CAD.jpg" ? { height: Math.round(width * 9 / 16) } : {}) });
     }
   }
 }

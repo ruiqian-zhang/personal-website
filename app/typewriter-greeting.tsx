@@ -5,7 +5,7 @@ import { advanceTypewriter, greetings, type TypewriterState } from "./typewriter
 
 function GreetingLines({ text, language }: { text: string; language: string }) {
   const breakAt = language === "zh-Hans" ? 3 : 8;
-  return <>{text.slice(0, breakAt).trimEnd()}{text.length > breakAt && <><br />{text.slice(breakAt)}</>}</>;
+  return <>{text.slice(0, breakAt)}{text.length > breakAt && <><br className="greeting-break" />{text.slice(breakAt)}</>}</>;
 }
 
 export function TypewriterGreeting() {

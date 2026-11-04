@@ -1,6 +1,8 @@
 import { SocialIcon } from "./social-icon";
+import { FooterLandscape, LandscapeCredit } from "./footer-landscape";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { SiteSearch } from "./site-search";
 import { SiteHeader } from "./site-header";
 import { ThemeToggle } from "./theme-toggle";
 import { PageTransition } from "./page-transition";
@@ -33,31 +35,32 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SiteHeader />
           <main id="main"><PageTransition>{children}</PageTransition></main>
         </div>
+        <SiteSearch />
         <footer className="site-footer">
-          <div className="site-shell footer-inner">
-            <div className="footer-main">
-              <nav className="social-links" aria-label="Social links">
-                <a href="mailto:rhema@vt.edu" aria-label="Email rhema@vt.edu" title="Email">
-                  <SocialIcon name="email" />
-                </a>
-                <a href="https://x.com/rhemazhang" target="_blank" rel="noopener noreferrer" aria-label="Rhema Zhang on X" title="X">
-                  <SocialIcon name="x" />
-                </a>
-                <a href="https://github.com/ruiqian-zhang" target="_blank" rel="noopener noreferrer" aria-label="Ruiqian Zhang on GitHub" title="GitHub">
-                  <SocialIcon name="github" />
-                </a>
-                <a href="https://www.linkedin.com/in/ruiqianzhang/" target="_blank" rel="noopener noreferrer" aria-label="Ruiqian Zhang on LinkedIn" title="LinkedIn">
-                  <SocialIcon name="linkedin" />
-                </a>
-              </nav>
-              <span className="footer-location">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
-                Blacksburg, VA
-              </span>
-            </div>
-            <div className="footer-meta">
-              <ThemeToggle />
-              <span className="footer-copyright">© 2027 Ruiqian Zhang</span>
+          <div className="site-shell footer-composition">
+            <FooterLandscape />
+            <div className="footer-inner">
+              <div className="footer-main">
+                <nav className="social-links" aria-label="Social links">
+                  <a href="mailto:rhema@vt.edu" aria-label="Email rhema@vt.edu" title="Email">
+                    <SocialIcon name="email" />
+                  </a>
+                  <a href="https://x.com/rhemazhang" target="_blank" rel="noopener noreferrer" aria-label="Rhema Zhang on X" title="X">
+                    <SocialIcon name="x" />
+                  </a>
+                  <a href="https://github.com/ruiqian-zhang" target="_blank" rel="noopener noreferrer" aria-label="Ruiqian Zhang on GitHub" title="GitHub">
+                    <SocialIcon name="github" />
+                  </a>
+                  <a href="https://www.linkedin.com/in/ruiqianzhang/" target="_blank" rel="noopener noreferrer" aria-label="Ruiqian Zhang on LinkedIn" title="LinkedIn">
+                    <SocialIcon name="linkedin" />
+                  </a>
+                </nav>
+              </div>
+              <div className="footer-meta">
+                <ThemeToggle />
+                <span className="footer-copyright">© 2027 Ruiqian Zhang</span>
+                <LandscapeCredit />
+              </div>
             </div>
           </div>
         </footer>

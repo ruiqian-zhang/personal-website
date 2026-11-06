@@ -12,11 +12,11 @@ export default function Toby() {
   return (
     <article className="project-detail">
       <h1>TOBY: Self-Balancing Rover</h1>
-      <p className="project-detail-meta">Prototype · Cal Hacks 13.0 · October 2026</p>
+      <p className="project-detail-meta">Prototype · Started <time dateTime="2026-10">October 2026</time></p>
       <div className="prose">
         <p>TOBY is a wheeled-legged robot exploring efficient rolling and an adjustable stance for uneven terrain. I worked on the electronics in our four-person team.</p>
       </div>
-      <a className="project-resource" href="https://devpost.com/software/toby-autonomous-bipedal-robot" target="_blank" rel="noopener noreferrer">Project story on Devpost ↗</a>
+      <a className="project-resource" href="https://devpost.com/software/toby-autonomous-bipedal-robot" target="_blank" rel="noopener noreferrer">Project story on Devpost</a>
       <figure className="project-figure">
         <Image src={projectImages.tobyCad} alt="TOBY CAD rendering showing its body, articulated legs, and two wheels" sizes="(max-width: 920px) 100vw, 856px" />
         <figcaption>Fusion 360 concept rendering</figcaption>

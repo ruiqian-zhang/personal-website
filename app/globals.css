@@ -156,7 +156,7 @@ article { max-width: 660px; }
 .project-figure figcaption { margin-top: var(--space-1); color: var(--muted); font-size: 13px; }
 .project-resource { display: inline-flex; align-items: center; min-height: 44px; margin-top: var(--space-2); }
 .prose p + p { margin-top: var(--space-3); }
-.prose p a { text-decoration: underline; text-underline-offset: 3px; }
+.prose p a, .project-resource, .project-figure figcaption a, .project-notes a { text-decoration: underline; text-underline-offset: 3px; }
 .university-link { display: inline-flex; align-items: baseline; gap: 6px; white-space: nowrap; }
 .university-logo { display: inline-block; width: 28px; height: 14px; flex-shrink: 0; align-self: center; color: #861f41; }
 .page-note { color: var(--muted); font-size: 16px; }
@@ -182,11 +182,11 @@ article { max-width: 660px; }
   width: 100%;
   background-image: var(--landscape-image);
   background-repeat: no-repeat;
-  opacity: .65;
+  opacity: .45;
   pointer-events: none;
   user-select: none;
 }
-:root[data-theme="dark"] .landscape-art { filter: invert(1); opacity: .8; }
+:root[data-theme="dark"] .landscape-art { filter: invert(1); opacity: .55; }
 .landscape-credit { margin: 0; color: var(--muted); font-size: 10px; text-align: right; }
 .site-footer .landscape-credit a { min-height: 0; text-decoration: underline; text-underline-offset: 3px; }
 .site-footer { margin-top: var(--space-4); color: var(--muted); font-size: 13px; }

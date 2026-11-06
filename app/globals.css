@@ -178,8 +178,14 @@ article { max-width: 660px; }
 .not-found-page { max-width: none; }
 .footer-composition { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
 .footer-landscape { grid-area: 1 / 1 / 2 / -1; min-width: 0; margin-left: calc(-1 * max(var(--page-gutter), env(safe-area-inset-left))); padding-bottom: var(--space-3); }
-.landscape-art { width: 100%; overflow: hidden; }
-.landscape-art img { display: block; width: 100%; height: clamp(280px, 30vw, 340px); object-fit: cover; object-position: left top; opacity: .65; }
+.landscape-art {
+  width: 100%;
+  background-image: var(--landscape-image);
+  background-repeat: no-repeat;
+  opacity: .65;
+  pointer-events: none;
+  user-select: none;
+}
 :root[data-theme="dark"] .landscape-art { filter: invert(1); opacity: .8; }
 .landscape-credit { margin: 0; color: var(--muted); font-size: 10px; text-align: right; }
 .site-footer .landscape-credit a { min-height: 0; text-decoration: underline; text-underline-offset: 3px; }
@@ -196,10 +202,8 @@ article { max-width: 660px; }
 @media (min-width: 601px) {
   .footer-composition { padding-bottom: 12px; }
   .footer-landscape { margin-left: calc(-1 * max(var(--page-gutter), (100vw - 856px) / 2)); padding-bottom: 0; }
-  .landscape-art { height: 500px; }
-  /* Extend the scene leftward at the original scale and keep its right-hand
-     landmarks anchored to the controls, regardless of the viewport width. */
-  .landscape-art img { width: 3135.93px; max-width: none; height: 100%; margin-left: calc(100% - 3002.93px); }
+  /* Anchor the mountains near the controls and keep the peaks in view as the footer narrows. */
+  .landscape-art { height: 500px; background-size: 1800px auto; background-position: max(-1070px, calc(100% - 110px)) top; }
   .landscape-credit { position: absolute; top: calc(100% + var(--space-4)); right: 0; white-space: nowrap; }
   .footer-main { min-height: 32px; justify-content: center; }
   .site-footer .social-links { gap: 24px; }
@@ -244,8 +248,7 @@ article { max-width: 660px; }
   .site-footer { margin-top: var(--space-3); }
   .footer-composition { grid-template-columns: minmax(0, 1fr); padding-bottom: max(12px, env(safe-area-inset-bottom)); }
   .footer-landscape { grid-area: auto; padding-bottom: 0; }
-  .landscape-art { height: 284px; }
-  .landscape-art img { width: 720px; max-width: none; height: auto; margin-left: min(0px, calc(100% - 456px)); }
+  .landscape-art { height: 284px; background-size: 1320px auto; background-position: clamp(-780px, calc(100% + 130px), -734px) top; }
   .landscape-credit { margin-top: calc(-1 * var(--space-1)); text-align: center; }
   .footer-inner { grid-area: auto; align-items: center; gap: var(--space-2); padding-top: 0; padding-bottom: 0; }
   .footer-main { align-items: center; }

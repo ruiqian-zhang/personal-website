@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 
 const landscapeStyle = {
-  "--landscape-image": `url("${process.env.NEXT_PUBLIC_BASE_PATH || ""}/landscapes/footer-mountains.webp")`,
+  "--landscape-image": `url("${process.env.NEXT_PUBLIC_BASE_PATH || ""}/landscapes/footer-mountains.webp?v=3773ba1d")`,
 } as CSSProperties;
 
 export function FooterLandscape() {
